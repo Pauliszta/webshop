@@ -1,0 +1,110 @@
+{% extends "__base__.html" %}
+{% block content %}
+        <section class="padding-large bg-light">
+        {% csrf_token %}
+                    <div id="carouselExampleControls" class="carousel slide main-slider" data-ride="carousel">
+                        <div class="carousel-inner container">
+                            <div class="carousel-item active">
+                                <div class="container w-75 d-flex">
+                                    <div class="carousel-caption d-block">
+{#                                        <p> Paski klinowe</p>#}
+{#                                        <img src="/static/images/pasek_one.jpg" alt="pasek">#}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="carousel-item" >
+                                <div class="container w-75 d-flex">
+                                    <div class="carousel-caption d-block">
+
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="carousel-item">
+                                <div class="container w-75 d-flex">
+                                    <div class="carousel-caption d-block">
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="sr-only">Previous</span>
+            </a>
+            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="sr-only">Next</span>
+            </a>
+        </div>
+
+    </section>
+
+    <section class="section-more padding-small">
+        <div class="container d-flex justify-content-between">
+            <div class="mr-4">
+                <h1 class="pb-3 text-color-lighter">Szukasz łożyska, węża lub paska klinowego?</h1>
+                <h4 class="pt-1 text-color-lighter">Skorzystaj z naszego sklepu internetowego</h4>
+            </div>
+            <div class="ml-4 align-self-center">
+                <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                    <a href="/shop/">SKLEP</a>
+                </button>
+            </div>
+        </div>
+    </section>
+
+<section class="padding-medium story" id="about">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="row">
+
+                <div class="col-7 ml-4">
+                    <h1 class="pb-1">Oferta</h1>
+                    <p> W naszej ofercie możecie znaleźć łożyska, paski klinowe, łańcuchy, koła zębate, pierścienia, uszczelniacze techniczne,
+                    smary, urządzenia smarownicze, narzędzia do łożysk, urządzenia pomiarowe, diagnostyczne i wiele innych. </p>
+
+                    <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                        <a href="/offer/">Czytaj więcej</a>
+                    </button>
+                </div>
+
+                <div class="col-4 mr-4">
+                    <div class="div-img">
+                        <img class ="div-img" src="static/images/lozyska2.jpg">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <section class="padding-medium story" id="about">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="row">
+                <div class="col-4 mr-4">
+                    <div class="div-img">
+                        <img class ="div-img" src="static/images/zew.png">
+                    </div>
+                </div>
+
+                <div class="col-7 ml-4">
+                    <h1 class="pb-1">O firmie</h1>
+                    <p> Przedsiębiorstwo Handlowo-Usługowe ROLMET zostało zarejestrowane 3 lipca 1992 roku jako spółka prawa handlowego.
+                        Od chwili rejestracji spółki następuje ciągły, dynamiczny jej rozwój.
+                        Siedziba firmy oraz magazyny mieszczą się w Inowrocławiu przy ulicy Poznańskiej 185.
+                        Firma od początku swego istnienia specjalizuje się w kompleksowym zaopatrzeniu przedsiębiorstw w łożyska toczne
+                        i asortymenty uzupełniające. </p>
+                    <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                        <a href="/about">Czytaj więcej</a>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+
+{% endblock content %}

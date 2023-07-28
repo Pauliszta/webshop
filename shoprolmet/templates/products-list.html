@@ -1,0 +1,92 @@
+{% extends "__dashboardbase__.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+    <form action="" method="POST">
+{% csrf_token %}
+<div class="dashboard-content border-dashed p-3 m-4 view-height">
+
+    <div class="row border-bottom border-3 p-1 m-1">
+        <div class="col noPadding">
+            <h3 class="color-header text-uppercase">
+                LISTA PRODUKTÓW
+            </h3>
+        </div>
+        <div class="col noPadding d-flex justify-content-end mb-2">
+            <a href="/product/add/" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">
+                Dodaj produkt
+            </a>
+        </div>
+    </div>
+    <h5 style="color: teal">
+        {{ message }}
+    </h5>
+    <table class="table border-bottom schedules-content">
+        <thead>
+        <tr class="d-flex text-color-darker">
+            <th scope="col" class="col-1">ID</th>
+            <th scope="col" class="col-2">MODEL</th>
+            <th scope="col" class="col-1">ILOŚĆ</th>
+            <th scope="col" class="col-2">KATEGORIA</th>
+            <th scope="col" class="col-2">PRODUCENT</th>
+            <th scope="col" class="col-2">AKTYWNY</th>
+            <th scope="col" class="col-2 center">AKCJE</th>
+        </tr>
+        </thead>
+        <tbody class="text-color-lighter">
+
+        {% for product in products %}
+
+            <tr class="d-flex">
+                <th scope="row" class="col-1">
+                    {{ product.id }}
+                </th>
+                <td class="col-2">
+                    {{ product.description }}
+                </td>
+                <td class="col-1">
+                    {{ product.stock }}
+                </td>
+                <td class="col-2">
+                    {{ product.category }}
+                </td>
+                <td class="col-2">
+                    {{ product.producent }}
+                </td>
+                <td class="col-2">
+                    {{ product.available }}
+                </td>
+                <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
+{#                    <a href="/product/delete/{{ product.id }}"#}
+{#                       class="btn btn-danger rounded-0 text-light m-1">Usuń</a>#}
+                    <a href="/product/{{ product.id }}"
+                       class="btn btn-info rounded-0 text-light m-1">Szczegóły</a>
+                    <a href="/product/edit/{{ product.id }}"
+                       class="btn btn-warning rounded-0 text-light m-1">Edytuj</a>
+                </td>
+            </tr>
+
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="pagination">
+        <span class="step-links">
+            {%  if products.paginator.num_pages > 1 %}
+                {% if products.has_previous %}
+                    <a href="?page={{ products.previous_page_number }}"> < poprzednia </a> |
+                {% endif %}
+
+                <span class="current">
+                    {%  for page in products.paginator.page_range %}
+                        <a href="?pages={{ page }}"> {{ page }} </a> |
+                    {% endfor %}
+                </span>
+
+                {% if products.has_next %}
+                    <a href="?page={{ products.next_page_number }}"> następna > </a>
+                {% endif %}
+            {%  endif %}
+        </span>
+    </div>
+</div>
+    </form>
+{% endblock content %}

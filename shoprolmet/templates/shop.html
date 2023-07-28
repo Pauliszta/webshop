@@ -1,0 +1,52 @@
+{% extends "__base__.html" %}
+{% block content %}
+    <section class="padding-medium story" id="about">
+        <div class="container d-flex justify-content-center align-items-center">
+            <div class="row">
+
+                <div class="col-7 ml-4">
+                    <h1 class="pb-1">Witamy w naszym sklepie</h1>
+                    <p> Zapraszamy do zapoznania się z asortymentem produktów.</p>
+                    <p>W naszej ofercie możecie znaleźć łożyska, paski klinowe, łańcuchy, koła zębate, pierścienia, uszczelniacze techniczne,
+                    smary, urządzenia smarownicze, narzędzia do łożysk, urządzenia pomiarowe, diagnostyczne i wiele innych. </p>
+                    <p> Nie znalazłeś/aś tego, co szukasz?</p>
+                    <p> Zapraszamy do kontaktu.</p>
+                    <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                        <a href="/contact/">Skontaktuj się</a>
+                    </button>
+                </div>
+                <div class="col-4 mr-4">
+                    <div class="div-img">"
+                        <img class ="div-img" src="../static/images/lozyska2.jpg">
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+        <section class="padding-small details">
+            <div class="container">
+                <div class="row text-color-lighter">
+                    {% for product in products %}
+                        <div class="col text-center">
+                            <img class ="div-img" src="{{ product.image }}">
+                            <p> {{ product.name }} {{ product.description }} </p>
+                            <p> brutto: {{ product.price }} zł </p>
+                            <p> netto: {{ product.price }} zł </p>
+                            <p> ilość: {{ product.stock }} </p>
+                            <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                                <a href="/shop/product/{{ product.id }}">Szczegóły</a>
+                            </button>
+                            <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                                <a href="/"> Dodaj do koszyka</a>
+                            </button>
+                        </div>
+                    {%  endfor %}
+                </div>
+            </div>
+        </section>
+
+
+{% endblock content %}
