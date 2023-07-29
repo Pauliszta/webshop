@@ -120,12 +120,20 @@ class ClientView(View):
 
 def add_to_cart(request, product_id):
     if request.method == "POST":
-        product = Product.objects.get(pk=product_id)
+        product = get_object_or_404(Product, pk=product_id)
         cart = request.session.get('cart', {})
         cart_item = cart.get(str(product_id), {'quantity': 0})
-        cart_item['quantity'] += 1
-        cart[str(product_id)] = cart_item
-        request.session['cart'] = cart
+        quantity = cart_item['quantity'] + 1
+
+        if quantity <= product.stock:
+            cart_item['quantity'] = quantity
+            cart[str(product_id)] = cart_item
+            request.session['cart'] = cart
+        else:
+            error_message = f" Przekroczono dostępną ilość produktu '{product.name} {product.description}. " \
+                            f"Maksymalna dostępna ilość to {product.stock}"
+            return render(request, 'error_message.html', {'error_message': error_message})
+
     return redirect('/cart/')
 
 
@@ -146,11 +154,25 @@ def view_cart(request):
     return render(request, 'cart-details.html', context=context)
 
 
-def cart_remove(request):
+def remove_cart(request):
     if request.method == 'POST':
         request.session.pop('cart', None)
     return redirect('/cart/')
 
 
+def update_cart(request):
+    if request.method == "POST":
+        cart = request.session.get('cart', {})
+        for product_id, quantity in request.POST.items():
+            if product_id.startswith('quantity_'):
+                product_id = product_id.split('_')[1]
+                product = get_object_or_404(Product, pk=product_id)
+                new_quantity = int(quantity)
 
+                if new_quantity > 0 and new_quantity <= product.stock:
+                    cart_item = cart.get(product_id, {'quantity': 0})
+                    cart_item['quantity'] = new_quantity
+                    cart[str(product_id)] = cart_item
+        request.session['cart'] = cart
+    return redirect('/cart/')
 
