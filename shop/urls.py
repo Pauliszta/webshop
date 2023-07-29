@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+from shoprolmet import views
 from shoprolmet.views import IndexView, DashboardView, AboutView, OfferView, ContactView, ShopView, ProductView, \
     ProductsListView, ProductAddView, OrderView, OrdersListView, ClientsListView, ClientView, ShopProductView
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -28,11 +30,14 @@ urlpatterns = [
     path('offer/', OfferView.as_view()),
     path('contact/', ContactView.as_view()),
     path('shop/', ShopView.as_view()),
-    path('shop/product/<int:id>', ShopProductView.as_view()),
-    path('product/<int:id>', ProductView.as_view()),
+    path('shop/product/<int:product_id>', ShopProductView.as_view()),
+    path('product/<int:product_id>', ProductView.as_view()),
     path('products/list/', ProductsListView.as_view()),
     path('product/add/', ProductAddView.as_view()),
     # path('product/modify/<int:id>', ProductEditView.as_view()),
+    path('cart/', views.view_cart),
+    path('cart/add/<int:product_id>', views.add_to_cart),
+    path('cart/remove/', views.cart_remove),
     path('order/<int:id>', OrderView.as_view()),
     path('orders/list/', OrdersListView.as_view()),
     # path('order/edit/', OrderEditView.as_view()),

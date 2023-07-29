@@ -3,23 +3,23 @@
 {% block content %}
 
                 <div class="dashboard-header m-4">
-                    <div class="dashboard-menu">
+                    <div class="dashboard-menu text-uppercase">
                         <div class="menu-item border-dashed">
                             <a href="/product/add/">
                                 <i class="far fa-plus-square icon-plus-square"></i>
-                                <span class="title">dodaj produkt</span>
+                                <span class="title">dodaj </br> produkt</span>
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
                             <a href="/employee/edit/">
                                 <i class="far fa-plus-square icon-plus-square"></i>
-                                <span class="title">edytuj dane</span>
+                                <span class="title">edytuj </br> dane</span>
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
                             <a href="/employee/password/">
                                 <i class="far fa-plus-square icon-plus-square"></i>
-                                <span class="title">zmień hasło</span>
+                                <span class="title ">zmień </br> hasło</span>
                             </a>
                         </div>
                     </div>
@@ -31,7 +31,7 @@
                         </div>
                         <div class="alert-item alert-light">
                             <i class="far icon-circle fa-info-circle"></i>
-                            <span class="font-weight-bold">Liczba aktywnych produktów: {{ products_quantity }}</span>
+                            <span class="font-weight-bold">Liczba produktów: {{ products_quantity }}</span>
                         </div>
                         <div class="alert-item alert-light">
                             <i class="far icon-calendar fa-calendar-alt"></i>
@@ -40,11 +40,10 @@
                     </div>
                 </div>
                 <div class="m-4 p-4 border-dashed">
-                {%  for order in orders %}
                     <h2 class="dashboard-content-title">
-                        <span>Ostatnio dodany plan:</span> {{ plan.name }} {{ last_plan_details }}
+                        <span>Ostatnio dodany produkt :</span>
+                        {{ last_product.name }} {{ last_product.model }}
                     </h2>
-                {%  endfor %}
                 {% for last_plan_detail in last_plan_details %}
                     <table class="table">
                         <thead>
@@ -59,7 +58,7 @@
                                 <td class="col-2">{{ last_plan_detail.meal_name }}</td>
                                 <td class="col-8">{{ recipe.name }}</td>
                                 <td class="col-2">
-                                    <a href="/recipe/{{ recipe.id }}">
+                                    <a href="/product/{{ product.id }}">
                                         <button type="button" class="btn btn-primary rounded-0">
                                             Szczegóły
                                         </button>

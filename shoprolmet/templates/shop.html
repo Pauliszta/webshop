@@ -39,9 +39,13 @@
                             <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
                                 <a href="/shop/product/{{ product.id }}">Szczegóły</a>
                             </button>
-                            <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
-                                <a href="/"> Dodaj do koszyka</a>
-                            </button>
+
+                            <form action="/cart/add/{{ product.id }}" method="post">
+                                {%  csrf_token %}
+                                <button type="submit" class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                                    Dodaj do koszyka
+                                </button>
+                            </form>
                         </div>
                     {%  endfor %}
                 </div>
