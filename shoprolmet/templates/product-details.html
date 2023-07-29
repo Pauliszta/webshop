@@ -8,11 +8,11 @@
                     <div class="row border-bottom border-3">
                         <div class="col">
                             <h3 class="color-header text-uppercase">
-                                Szczegóły przepisu</h3>
+                                Szczegóły produktu</h3>
                         </div>
 
                         <div class="col d-flex justify-content-end mb-2"><a
-                                href="/recipe/list/"
+                                href="/products/list/"
                                 class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Powrót</a>
                         </div>
                     </div>
@@ -20,45 +20,57 @@
                     <table class="table borderless">
                         <tbody>
                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Nazwa Przepisu</th>
+                            <th scope="row" class="col-4">Nazwa produktu</th>
                             <td class="col-7">
-                                {{ recipe.name }}
+                                {{ product.name }}
                             </td>
                         </tr>
                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Opis przepisu</th>
+                            <th scope="row" class="col-4">Model produktu</th>
                             <td class="col-7">
-                                {{ recipe.description }}
+                                {{ product.description }}
                             </td>
                         </tr>
                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Przygotowanie (minuty)</th>
+                            <th scope="row" class="col-4">Kategoria produktu</th>
                             <td class="col-7">
-                                {{ recipe.preparation_time }}
+                                {{ product.category }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-4">Dostępność</th>
+                            <td class="col-7">
+                                {{ product.available }}
                             </td>
                         </tr>
                          <tr class="d-flex">
-                            <th scope="row" class="col-2">Liczba polubień</th>
+                            <th scope="row" class="col-4">Ilość na magazynie</th>
                             <td class="col-7">
-                                {{ recipe.votes }}
+                                {{ product.stock }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-4">Producent</th>
+                            <td class="col-7">
+                                {{ product.producent }}
                             </td>
                         </tr>
                         </tbody>
                     </table>
 
-                    <h5 style="color: teal">
+                    <h5 style="color: white">
                         {{ message }}
                     </h5>
 
                     <div class="col d-flex justify-content-center mb-2">
                         {%  csrf_token %}
-                        <form action="/recipe/{{ recipe.id }}/" method="POST">
+                        <form action="/product/edit/{{ product.id }}/" method="POST">
                             {%  csrf_token %}
-                                <input type="hidden" name="id" value="{{ recipe.id }}">
-                                <button class ="btn btn-info rounded-0 text-light m-1"
-                                                type="submit" name="like"> Polub przepis </button>
-                                <button class ="btn btn-info rounded-0 text-light m-1"
-                                                type="submit" name="dislike"> Nie lubię przepisu </button>
+                                <input type="hidden" name="id" value="{{ product.id }}">
+                                <button class ="btn btn-warning rounded-0 text-light m-1"
+                                                type="submit" name="like"> Edytuj </button>
+                                <button class ="btn btn-danger rounded-0 text-light m-1"
+                                                type="submit" name="dislike"> Usuń </button>
 
                         </form>
 
@@ -66,25 +78,21 @@
 
                     <div class="row d-flex">
                         <div class="col-5 border-bottom border-3"><h3
-                                class="text-uppercase">Sposób przygotowania</h3></div>
+                                class="text-uppercase">Wymiary</h3></div>
                         <div class="col-2"></div>
                         <div class="col-5 border-bottom border-3"><h3
-                                class="text-uppercase">Składniki</h3></div>
+                                class="text-uppercase">Zamienniki</h3></div>
                     </div>
                     <div class="row d-flex">
                         <div class="col-5 p-4">
-                            <ul>{{ recipe.preparing }}</ul>
+                            <ul> średnica wew. {{ product.width }} </ul>
 
                         </div>
                         <div class="col-2"></div>
                         <ul class="col-5 p-4 list-unstyled">
-    {#                        {% int for ingredinet in recipe.ingredients %}#}
-                                <li> {{ recipe.ingredients }}</li>
-    {#                        {%  endfor %}#}
-    {#            <div class="col-5 p-4">#}
-    {#                <textarea class="w-100 p-1" rows="10">{{ recipe.ingredients }}#}
-    {#                </textarea>#}
-    {#            </div>#}
+{#                            {% int for exchange in product.exchanges %}#}
+{#                                <li> {{ product.exchange }}</li>#}
+{#                            {%  endfor %}#}
                         </ul>
                     </div>
 

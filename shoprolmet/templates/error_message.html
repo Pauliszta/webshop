@@ -1,0 +1,35 @@
+{% extends "__base__.html" %}
+{% load static %}
+{% block title %}
+    Koszyk na zakupy
+{% endblock %}
+{% block content %}
+    <section class="padding-medium story">
+        <div class="container">
+            <h2 class=" color-header text-uppercase">Twój koszyk</h2>
+                <table class="table borderless">
+
+                    <tbody>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-1"></th>
+                        <td class="col-10">
+                            {{ error_message }}
+                        </td>
+                    </tr>
+
+                    </tbody>
+                </table>
+
+        </div>
+        <div class="col d-flex justify-content-end mb-1 padding-small">
+            <form action="/cart/" method="post">
+                {%  csrf_token %}
+                <button class ="btn btn-color rounded-0 text-light m-1" type="submit">Powrót do koszyka</button>
+            </form>
+        </div>
+
+
+
+
+    </section>
+{% endblock %}
