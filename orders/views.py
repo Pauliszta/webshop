@@ -7,6 +7,9 @@ from .models import Order, OrderItem
 
 
 def new_order(request):
+    """
+    Creates the new order
+    """
     cart = request.session.get('cart', {})
     cart_items = []
     total_price = 0
@@ -56,6 +59,9 @@ def new_order(request):
 
 
 def order_more_info(request):
+    """
+    Returns the more needed information for teh order.
+    """
     return render(request, 'order-more-info.html')
 
 

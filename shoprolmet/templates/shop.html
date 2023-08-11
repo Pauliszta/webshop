@@ -38,10 +38,9 @@
                             <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
                                 <a href="/shop/product/{{ product.id }}">Szczegóły</a>
                             </button>
-
-
                             <form action="/add/{{ product.id }}" method="post">
                                 {%  csrf_token %}
+                                <input type="hidden" name="quantity" value="1">
                                 <button type="submit" class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
                                     Dodaj do koszyka
                                 </button>
