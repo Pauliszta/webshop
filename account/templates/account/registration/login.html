@@ -1,0 +1,46 @@
+{% extends "__base__.html" %}
+{%  block title %}
+    Logowanie
+{%  endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="col-12 col-lg-6 mx-auto">
+                        <form class="account-form p-4" action="{%  url 'account:login' %}" method="post">
+                            {%  csrf_token %}
+                            <h3 class="mb-4"> Zaloguj się </h3>
+                            {%  if forms.errors %}
+                            <div class="alert alert-primary" role="alert">
+                                Błąd: Nazwa użytkownika lub hasło nie jest poprawne!
+                            </div>
+                            {%  endif %}
+
+                            <label class="form-label"> {{ form.username.label }}</label>
+                            {{ form.username }}
+                            <label class="form-label"> {{ form.password.label }}</label>
+                            {{ form.password }}
+                            <div class="d-grid gap-2">
+                                <input type="hidden" name="next" value="{{ next }}">
+                                <button class="btn btn-primary py-2 mb-4 mt-5 fw-bold" type="submit" value="login">
+                                Zaloguj się
+                                </button>
+                            </div>
+                            <p class="text-center pt-4">
+                                <a href="/account/register/"> Utwórz konto </a>
+                            </p>
+                        </form>
+                        <h5 class="text-center"> Problem z logowaniem? </h5>
+                        <h6 class="text-center"> Skontaktuj się z nami!</h6>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}

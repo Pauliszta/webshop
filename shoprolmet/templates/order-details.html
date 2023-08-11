@@ -8,11 +8,11 @@
                     <div class="row border-bottom border-3">
                         <div class="col">
                             <h3 class="color-header text-uppercase">
-                                Szczegóły przepisu</h3>
+                                Szczegóły zamówienia</h3>
                         </div>
 
                         <div class="col d-flex justify-content-end mb-2"><a
-                                href="/recipe/list/"
+                                href="/orders/list/"
                                 class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Powrót</a>
                         </div>
                     </div>
@@ -20,27 +20,57 @@
                     <table class="table borderless">
                         <tbody>
                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Nazwa Przepisu</th>
+                            <th scope="row" class="col-2">Klient</th>
                             <td class="col-7">
-                                {{ recipe.name }}
+                                {{ order.user }} - {{ order.full_name }}
                             </td>
                         </tr>
                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Opis przepisu</th>
+                            <th scope="row" class="col-2">Adres</th>
                             <td class="col-7">
-                                {{ recipe.description }}
+                                {{ order.address1 }} {{ order.address2 }}
                             </td>
                         </tr>
                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Przygotowanie (minuty)</th>
+                            <th scope="row" class="col-2">Kod pocztowy</th>
                             <td class="col-7">
-                                {{ recipe.preparation_time }}
+                                {{ order.post_code }}
                             </td>
                         </tr>
-                         <tr class="d-flex">
-                            <th scope="row" class="col-2">Liczba polubień</th>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Miasto</th>
                             <td class="col-7">
-                                {{ recipe.votes }}
+                                {{ order.city }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Wartość</th>
+                            <td class="col-7">
+                                {{ order.total_paid }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Status</th>
+                            <td class="col-7">
+                                {{ order.get_status_display }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Status płatności</th>
+                            <td class="col-7">
+                                {{ order.billing_status }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Metoda płatności</th>
+                            <td class="col-7">
+                                {{ order.get_payment_method_display }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Metoda dostawy</th>
+                            <td class="col-7">
+                                {{ order.get_delivery_method_display }}
                             </td>
                         </tr>
                         </tbody>
@@ -50,44 +80,23 @@
                         {{ message }}
                     </h5>
 
-                    <div class="col d-flex justify-content-center mb-2">
-                        {%  csrf_token %}
-                        <form action="/recipe/{{ recipe.id }}/" method="POST">
-                            {%  csrf_token %}
-                                <input type="hidden" name="id" value="{{ recipe.id }}">
-                                <button class ="btn btn-info rounded-0 text-light m-1"
-                                                type="submit" name="like"> Polub przepis </button>
-                                <button class ="btn btn-info rounded-0 text-light m-1"
-                                                type="submit" name="dislike"> Nie lubię przepisu </button>
-
-                        </form>
-
-                    </div>
 
                     <div class="row d-flex">
-                        <div class="col-5 border-bottom border-3"><h3
-                                class="text-uppercase">Sposób przygotowania</h3></div>
+                        <div class="col-12 border-bottom border-3"><h3
+                                class="text-uppercase">Lista produktów</h3></div>
                         <div class="col-2"></div>
-                        <div class="col-5 border-bottom border-3"><h3
-                                class="text-uppercase">Składniki</h3></div>
+
                     </div>
                     <div class="row d-flex">
-                        <div class="col-5 p-4">
-                            <ul>{{ recipe.preparing }}</ul>
-
+                        <div class="col-12 p-4">
+                            {% for order_item in order_items %}
+                                <ul>
+                                <li><a class="text-color-lighter" href="/product/{{ order_item.id }}/" >
+                                {{ order_item.product }} {{ order_item.product.description }}- {{ order_item.quantity }} szt. - {{ order_item.price }} zł</a></li>
+                                </ul>
+                            {% endfor %}
                         </div>
-                        <div class="col-2"></div>
-                        <ul class="col-5 p-4 list-unstyled">
-    {#                        {% int for ingredinet in recipe.ingredients %}#}
-                                <li> {{ recipe.ingredients }}</li>
-    {#                        {%  endfor %}#}
-    {#            <div class="col-5 p-4">#}
-    {#                <textarea class="w-100 p-1" rows="10">{{ recipe.ingredients }}#}
-    {#                </textarea>#}
-    {#            </div>#}
-                        </ul>
                     </div>
-
                 </div>
     </div>
 

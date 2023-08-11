@@ -55,6 +55,12 @@
                                 {{ product.producent }}
                             </td>
                         </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-4">Cena</th>
+                            <td class="col-7">
+                                {{ product.price }} zł
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
 
@@ -64,7 +70,7 @@
 
                     <div class="col d-flex justify-content-center mb-2">
                         {%  csrf_token %}
-                        <form action="/product/edit/{{ product.id }}/" method="POST">
+                        <form action="/product/edit/{{ product.id }}">
                             {%  csrf_token %}
                                 <input type="hidden" name="id" value="{{ product.id }}">
                                 <button class ="btn btn-warning rounded-0 text-light m-1"

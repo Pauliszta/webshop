@@ -11,15 +11,15 @@
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
-                            <a href="/employee/edit/">
+                            <a href="/account/profile/edit/{{ customer.id }}">
                                 <i class="far fa-plus-square icon-plus-square"></i>
                                 <span class="title">edytuj </br> dane</span>
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
-                            <a href="/employee/password/">
+                            <a href="/account/logout/">
                                 <i class="far fa-plus-square icon-plus-square"></i>
-                                <span class="title ">zmień </br> hasło</span>
+                                <span class="title ">wyloguj </br> się</span>
                             </a>
                         </div>
                     </div>
@@ -27,7 +27,7 @@
                     <div class="dashboard-alerts">
                         <div class="alert-item alert-light">
                             <i class="fas icon-circle fa-info-circle"></i>
-                            <span class="font-weight-bold">Liczba zamówień do wysłania na dzisiaj: {{ today_orders }}</span>
+                            <span class="font-weight-bold">Liczba zamówień: {{ today_orders }}</span>
                         </div>
                         <div class="alert-item alert-light">
                             <i class="far icon-circle fa-info-circle"></i>
@@ -42,73 +42,36 @@
                 <div class="m-4 p-4 border-dashed">
                     <h2 class="dashboard-content-title">
                         <span>Ostatnio dodany produkt :</span>
-                        {{ last_product.name }} {{ last_product.model }}
                     </h2>
-                {% for last_plan_detail in last_plan_details %}
+
                     <table class="table">
                         <thead>
                             <tr class="d-flex">
-                                <th class="col-2">{{ last_plan_detail.day_name }}</th>
-                                <th class="col-8"></th>
+                                <th class="col-2">Nr</th>
+                                <th class="col-6">Nazwa</th>
+                                <th class="col-2">Ilość</th>
                                 <th class="col-2"></th>
                             </tr>
                         </thead>
                         <tbody>
+                        {% for small_stock_product in small_stock_products %}
                             <tr class="d-flex">
-                                <td class="col-2">{{ last_plan_detail.meal_name }}</td>
-                                <td class="col-8">{{ recipe.name }}</td>
+                                <td class="col-2">{{ forloop.counter }}</td>
+                                <td class="col-6">{{ small_stock_product.id }} - {{ small_stock_product.name }} - {{ small_stock_product.description }}</td>
+                                <td class="col-2">{{ small_stock_product.stock }}</td>
                                 <td class="col-2">
-                                    <a href="/product/{{ product.id }}">
+                                    <a href="/product/{{ small_stock_product.id }}">
                                         <button type="button" class="btn btn-primary rounded-0">
                                             Szczegóły
                                         </button>
                                     </a>
                                 </td>
                             </tr>
-                            <tr class="d-flex">
-                                <td class="col-2">drugie śniadanie</td>
-                                <td class="col-8">kanapka z pastą rybną</td>
-                                <td class="col-2">
-                                    <button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                            </tr>
-                            <tr class="d-flex">
-                                <td class="col-2">obiad</td>
-                                <td class="col-8">zupa pomidorowa</td>
-                                <td class="col-2">
-                                    <button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                            </tr>
+                        {% endfor %}
                         </tbody>
                     </table>
-                {% empty %}
-                    <h5 style="color: #fffffa">
-                        Ten nowy plan nie zawiera przepisów. Dodaj je do planu.
-                    </h5>
-                {% endfor %}
 
-                    <table class="table">
-                        <thead>
-                            <tr class="d-flex">
-                                <th class="col-2">Wtorek</th>
-                                <th class="col-8"></th>
-                                <th class="col-2"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="d-flex">
-                                <td class="col-2">śniadanie</td>
-                                <td class="col-8">płatki owsiane z jagodami i komosą ryżową</td>
-                                <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                            </tr>
-                            <tr class="d-flex">
-                                <td class="col-2">drugie śniadanie</td>
-                                <td class="col-8">pączki</td>
-                                <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                            </tr>
-                            <tr class="d-flex">
-                                <td class="col-2">obiad</td>
-                                <td class="col-8">schabowy w panierce</td>
-                                <td class="col-2"><button type="button" class="btn btn-primary rounded-0">Szczegóły</button></td>
-                            </tr>
+
                         </tbody>
                     </table>
                 </div>
@@ -117,26 +80,32 @@
                 </h5>
                 <div class="dashboard-menu">
                         <div class="menu-item border-dashed">
-                            <a href="/product/add/">
-                                <i class="icon-plus-square">114</i>
+                            <a href="/orders/list/new/">
+                                <i class="icon-plus-square">{{ new_orders }}</i>
                                 <span class="title">nowe</span>
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
-                            <a href="/employee/edit/">
-                                <i class="icon-plus-square">54</i>
+                            <a href="/orders/list/paid/">
+                                <i class="icon-plus-square">{{ paid_orders }}</i>
+                                <span class="title">opłacone</span>
+                            </a>
+                        </div>
+                        <div class="menu-item border-dashed">
+                            <a href="/orders/list/prepare/">
+                                <i class="icon-plus-square">{{ in_progress_orders }}</i>
                                 <span class="title">w trakcie przygotowania</span>
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
-                            <a href="/employee/password/">
-                                <i class="icon-plus-square">95</i>
+                            <a href="/orders/list/ready/">
+                                <i class="icon-plus-square">{{ ready_to_go_orders }}</i>
                                 <span class="title">gotowe do wysłania</span>
                             </a>
                         </div>
                         <div class="menu-item border-dashed">
-                            <a href="/employee/password/">
-                                <i class="icon-plus-square">124</i>
+                            <a href="/orders/list/sent/">
+                                <i class="icon-plus-square">{{ sent_orders }}</i>
                                 <span class="title">wysłane</span>
                             </a>
                         </div>

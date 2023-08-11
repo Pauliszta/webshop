@@ -11,72 +11,27 @@
 
                 <div class="mt-4 ml-4 mr-4">
                     <div class="row border-bottom border-3">
-                        <div class="col"><h3 class="color-header text-uppercase">
-                            Nowy produkt
-                        </h3></div>
+                        <div class="col">
+                            <h3 class="color-header text-uppercase">
+                            Nowy produkt </h3>
+                        </div>
                         <div class="col d-flex justify-content-end mb-2">
-                            <button type="submit"
-                                    class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">
-                                Zapisz
+                            <button class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">
+                                <a href="/products/list/" >Powrót</a>
                             </button>
                         </div>
-                    </div>
 
-                    <table class="table borderless">
-                        <tbody>
-                        <h5 style="color: teal">
-                            {{ message }}
-                        </h5>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Nazwa produktu</th>
-                            <td class="col-7">
-                                <input class="w-100 p-1" name="name" value="{{ product.name }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Model</th>
-                            <td class="col-7">
-                                <input class="w-100 p-1" name="model" value = "{{ product.model }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Dostępna ilość: </th>
-                            <td class="col-3">
-                                <input class="p-1" type="number" name="qunatity" value="{{ product.quantity }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Szerokość (mm): </th>
-                            <td class="col-3">
-                                <input class="p-1" type="number" name="width" value="{{ product.width }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Kategoria: </th>
-                            <td class="col-3">
-                                <input class="w-100 p-1" name="category" value="{{ product.category }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Szerokość (mm): </th>
-                            <td class="col-3">
-                                <input class="p-1" type="number" name="width" value="{{ product.width }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Aktywny: </th>
-                            <td class="col-3">
-                                <input class="w-100 p-1" name="activ" value="{{ product.activ }}">
-                            </td>
-                        </tr>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-2">Producent: </th>
-                            <td class="col-3">
-                                <input class="w-100 p-1" name="producent" value="{{ product.producent }}">
-                            </td>
-                        </tr>
-                        </tbody>
-                    </table>
+                    </div>
+                    <div>
+                        <table class="table borderless padding-small">
+                                {{ form.as_p }}
+                        </table>
+                    </div>
+                    <div class="col d-flex justify-content-end mb-2">
+                        <button type="submit" class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
+                                Zapisz
+                        </button>
+                    </div>
                 </div>
             </div>
         </form>

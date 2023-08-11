@@ -1,51 +1,48 @@
-"""
-URL configuration for shop project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.2/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from django.contrib.admin.views.decorators import staff_member_required
 
 from shoprolmet import views
-from shoprolmet.views import IndexView, DashboardView, AboutView, OfferView, ContactView, ShopView, ProductView, \
-    ProductsListView, ProductAddView, OrderView, OrdersListView, ClientsListView, ClientView, ShopProductView
-
+from shoprolmet.views import IndexView, DashboardView, \
+    ShopView, ProductView, ProductsListView, OrdersListView, ClientsListView, ClientView, ShopProductView, \
+    OrdersListNewView, OrdersListPaidView, \
+    OrdersListPrepareView, OrdersListReadyView, OrdersListSentView, OrderView, ProductAddView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', IndexView.as_view()),
-    path('main/', DashboardView.as_view()),
-    path('about/', AboutView.as_view()),
-    path('offer/', OfferView.as_view()),
-    path('contact/', ContactView.as_view()),
+    path('main/', staff_member_required(DashboardView.as_view())),
+    path('about/', views.about_view, name='about'),
+    path('offer/', views.offer_view, name='offer'),
+    path('contact/', views.contact_view, name='contact'),
     path('shop/', ShopView.as_view()),
-    path('shop/product/<int:product_id>', ShopProductView.as_view()),
-    path('product/<int:product_id>', ProductView.as_view()),
-    path('products/list/', ProductsListView.as_view()),
-    path('product/add/', ProductAddView.as_view()),
-    # path('product/modify/<int:id>', ProductEditView.as_view()),
-    path('cart/', views.view_cart),
-    path('cart/add/<int:product_id>', views.add_to_cart),
-    path('cart/remove/', views.remove_cart),
-    path('cart/edit/', views.update_cart),
-    path('order/<int:id>', OrderView.as_view()),
-    path('orders/list/', OrdersListView.as_view()),
-    # path('order/edit/', OrderEditView.as_view()),
-    path('clients/list/', ClientsListView.as_view()),
-    path('client/<int:id>/', ClientView.as_view()),
-    # path('login/', LoginView.as_view()),
-    # path('registration', Registraction.as_view()),
+    path('shop/product/<int:product_id>/', ShopProductView.as_view()),
+
+    path('product/<int:product_id>/', staff_member_required(ProductView.as_view())),
+    path('products/list/', staff_member_required(ProductsListView.as_view())),
+    path('product/add/', staff_member_required(ProductAddView.as_view())),
+    path('product/edit/<int:product_id>/', views.edit_product, name='edit_product'),
+
+
+    path('orders/list/', staff_member_required(OrdersListView.as_view())),
+    path('order/<int:order_id>/', staff_member_required(OrderView.as_view())),
+    path('order/edit/<int:order_id>/', views.edit_order),
+    path('orders/list/new/', staff_member_required(OrdersListNewView.as_view())),
+    path('orders/list/paid/', staff_member_required(OrdersListPaidView.as_view())),
+    path('orders/list/prepare/', staff_member_required(OrdersListPrepareView.as_view())),
+    path('orders/list/ready/', staff_member_required(OrdersListReadyView.as_view())),
+    path('orders/list/sent/', staff_member_required(OrdersListSentView.as_view())),
+
+    path('customers/list/', staff_member_required(ClientsListView.as_view())),
+    path('customer/<int:customer_id>/', staff_member_required(ClientView.as_view())),
+    path('customer/edit/<int:customer_id>', views.edit_customer),
+
+    path('account/', include('account.urls', namespace='account')),
+    path('orders/', include('orders.urls', namespace='orders')),
+    path('', include('cart.urls', namespace='cart')),
 
 
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -16,7 +16,7 @@
                     </button>
                 </div>
                 <div class="col-4 mr-4">
-                    <div class="div-img">"
+                    <div class="div-img">
                         <img class ="div-img" src="../static/images/lozyska2.jpg">
                     </div>
                 </div>
@@ -31,16 +31,16 @@
                 <div class="row text-color-lighter">
                     {% for product in products %}
                         <div class="col text-center">
-                            <img class ="div-img" src="{{ product.image }}">
+                                <img class ="div-img" src="{{ product.image.url }}">
                             <p> {{ product.name }} {{ product.description }} </p>
-                            <p> brutto: {{ product.price }} zł </p>
-                            <p> netto: {{ product.price }} zł </p>
-                            <p> ilość: {{ product.stock }} </p>
+                            <p>  cena brutto: {{ product.price }} zł </p>
+                            <p> ilość: {{ product.stock }} szt.</p>
                             <button class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
                                 <a href="/shop/product/{{ product.id }}">Szczegóły</a>
                             </button>
 
-                            <form action="/cart/add/{{ product.id }}" method="post">
+
+                            <form action="/add/{{ product.id }}" method="post">
                                 {%  csrf_token %}
                                 <button type="submit" class="btn btn-color rounded-0 mt-4 pl-4 pr-4">
                                     Dodaj do koszyka

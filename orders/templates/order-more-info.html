@@ -1,0 +1,97 @@
+{% extends "__base__.html" %}
+{%  block title %}
+    Logowanie
+{%  endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div id="payment-form" class="col-12 col-lg-6 mx-auto">
+                            <h3 class="mb-3">Adres dostawy</h3>
+                            <div id="card-errors" class="a" role="alert"></div>
+
+                            <form action="/orders/new/" method="post">
+                                {%  csrf_token %}
+                                <div class="row g-3">
+                                    <div class="col-sm-12">
+                                        <label for="firstName" class="form-label">Nazwisko i imię odbiorcy</label>
+                                        <input type="text" class="form-control" name="full_name" placeholder="Nazwisko i imię" required>
+                                            <div class="invalid-feedback">
+                                                Imię i nazwisko odbiorcy jest konieczne.
+                                            </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="email" class="form-label">Email <span class="text-muted">(Optional)</span></label>
+                                        <input type="email" class="form-control" name="email" placeholder="adresemail@email.com">
+                                        <div class="invalid-feedback">
+                                            Proszę podaj adres e-mail dla wysyłki.
+                                        </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="address" class="form-label">Adres</label>
+                                            <input type="text" class="form-control" name="add1" placeholder="Ulica i nr domu/mieszkania" required>
+                                            <div class="invalid-feedback">
+                                                Proszę podaj adres dostawy.
+                                            </div>
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="address2" class="form-label">Adres 2 <span class="text-muted">(Opcjonalnie)</span></label>
+                                        <input type="text" class="form-control" name="add2" placeholder="">
+                                    </div>
+                                    <div class="col-12">
+                                        <label for="phone" class="form-label">Telefon <span class="text-muted">(Opcjonalnie)</span></label>
+                                        <input type="text" class="form-control" name="phone" placeholder="">
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label for="postcode" class="form-label">Kod pocztowy</label>
+                                        <input type="text" class="form-control" name="post_code" placeholder="" required>
+                                        <div class="invalid-feedback">
+                                            Podaj kod pocztowy
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9">
+                                        <label for="city" class="form-label">Miasto</label>
+                                        <input type="text" class="form-control" name="city" placeholder="Wrocław" required>
+                                        <div class="invalid-feedback">
+                                            Podaj miasto
+                                        </div>
+                                    </div>
+                                    <hr class="my-12">
+                                    <h4 class="mb-12">Metoda płatności</h4>
+                                    <label for="payment_method"></label>
+                                    <div class="col-md-12 .center">
+                                            <select class="form-select" name="payment_method" required>
+                                                <option value="">Wybierz</option>
+                                                    <option>przelew</option>
+                                                    <option>płatność przy odbiorze</option>
+                                            </select>
+                                    </div>
+                                    <hr class="my-12">
+                                    <h4 class="mb-12">Metoda dostawy</h4><br>
+                                    <label for="delivery_method"></label>
+                                    <div class="col-md-12 .center">
+                                            <select class="form-select" name="delivery_method" required>
+                                                <option value="">Wybierz</option>
+                                                    <option>Kurier DPD</option>
+                                                    <option>Kurier DHL</option>
+                                                    <option>Poczta Polska</option>
+                                            </select>
+                                    </div>
+                                </div>
+
+                                <hr class="my-4">
+                                <button class="btn btn-color w-100 fw-bold" type="submit">Zamów</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
