@@ -1,0 +1,81 @@
+{% extends "__base__.html" %}
+{%  block title %}
+    Twoje konto
+{%  endblock %}
+{% block content %}
+
+    <main class ="pt-5">
+    <div class="container" style="max-width: 1000px">
+        <div class="col-12">
+            <h2 class="text-uppercase"> Twoje konto</h2>
+        </div>
+        <hr />
+        <div class="col-12 d-flex justify-content-between">
+            <div> Zarządzaj swoimi zamówieniami i kontem</div>
+            <div>
+                <a href="{% url 'account:edit_details' %}"> Edytuj swoje konto</a>
+            </div>
+        </div>
+        <hr />
+        {%  if message %}
+            <div class="col-12 d-flex justify-content-between">
+                <div> <h5>{{ message }}</h5></div>
+            </div>
+            </hr>
+            <hr />
+        {% endif %}
+    </div>
+        {%  for order in orders %}
+        <div class="container" style="max-width: 1000px">
+
+                <div class="row g-3">
+                    <div class="col-12 bg-light p-3 d-flex justify-content-between">
+                        <div class="d-flex d-flex-inline">
+                            <div class="pe-3">{{  order.created }}</div>
+                        </div>
+                        <div class="text-end">
+                            Wartość zamówienia: <span class="fw-bold">{{  order.total_paid }} zł</span>
+                        </div>
+                    </div>
+                    <div class="col-md-5 col-lg-4 order-md-last p-0 order-3">
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-warning" type="button" href="/contact/"> Problem z zamówieniem?</a>
+
+                        </div>
+                        <div class="d-grid gap-2">
+                            <a class="btn btn-color" type="button" href="/shop/">Powrót do sklepu</a>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-lg-8 p-0">
+                        <div class="card mb-3 border-0">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <h6 class="text-uppercase"> Nr zamówienia: </h6>
+                                    <h5>{{ order.id }} </h5>
+                                </div>
+                                <div class="col-md-3">
+                                    <h6 class="text-uppercase"> status: </h6>
+                                    <h5>{{ order.get_status_display }}</h5>
+                                </div>
+                                <div>
+                                    <h6 class="text-uppercase"> produkty:</h6>
+                                    {%  for item in order.items.all %}
+                                        <a class="text-decoration-none" href="../../shop/product/{{ item.product.id }}">
+                                            <p class="card-text small">{{ item.product.name }} {{ item.product.description }}</p>
+                                        </a>
+                                    {% endfor %}
+                                </div>
+
+                                <div class="col-md-3">
+                                    <p></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {%  endfor %}
+    </main>
+
+
+{% endblock content %}

@@ -1,0 +1,102 @@
+{% extends "__dashboardbase__.html" %}
+{% block title %}{% endblock %}
+{% block content %}
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+        {%  csrf_token %}
+                <div class="mt-4 ml-4 mr-4">
+
+                    <div class="row border-bottom border-3">
+                        <div class="col">
+                            <h3 class="color-header text-uppercase">
+                                Szczegóły klienta</h3>
+                        </div>
+
+                        <div class="col d-flex justify-content-end mb-2"><a
+                                href="/customers/list/"
+                                class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Powrót</a>
+                        </div>
+                    </div>
+
+                    <table class="table borderless">
+                        <tbody>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Nr</th>
+                            <td class="col-7">
+                                {{ customer.id }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Imię</th>
+                            <td class="col-7">
+                                {{ customer.first_name }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Nazwisko</th>
+                            <td class="col-7">
+                                {{ customer.last_name }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Miasto</th>
+                            <td class="col-7">
+                                {{ customer.city }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Kod pocztowy</th>
+                            <td class="col-7">
+                                {{ customer.postal_code }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Adres</th>
+                            <td class="col-7">
+                                {{ customer.address }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">E-mail</th>
+                            <td class="col-7">
+                                {{ customer.email }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Aktywny</th>
+                            <td class="col-7">
+                                {{ customer.is_active }}
+                            </td>
+                        </tr>
+                        <tr class="d-flex">
+                            <th scope="row" class="col-2">Pracownik</th>
+                            <td class="col-7">
+                                {{ customer.is_staff }}
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <h5 style="color: teal">
+                        {{ message }}
+                    </h5>
+
+
+                    <div class="row d-flex">
+                        <div class="col-12 border-bottom border-3"><h3
+                                class="text-uppercase">Zamówienia</h3></div>
+                        <div class="col-2"></div>
+
+                    </div>
+                    <div class="row d-flex">
+                        <div class="col-12 p-4">
+                            {% for order in orders %}
+                            <ul></ul>
+                                <a class="text-color-lighter" href="/order/{{ order.id }}/" >Nr zamówienia: {{ order.id }} - status: {{ order.get_status_display }}</a>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                </div>
+    </div>
+
+{% endblock content %}

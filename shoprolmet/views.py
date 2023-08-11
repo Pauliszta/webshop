@@ -1,12 +1,19 @@
-from typing import List
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, get_object_or_404, redirect
 from django.views import View
+from django.contrib.admin.views.decorators import staff_member_required
+
+from account.models import UserBase
+from orders.models import Order, OrderItem
+
+from .forms import ProductAddForm, ProductEditForm, \
+    OrderEditForm, CustomerEditForm
 from .models import Category, Product
 import datetime
-
+from decimal import Decimal
 
 # Create your views here.
+
 
 class IndexView(View):
     def get(self, request):
@@ -17,43 +24,58 @@ class DashboardView(View):
     def get(self, request):
         today_date = datetime.datetime.now()
         products_quantity = Product.objects.count()
-        # today_orders_quantity =
-        # last_product_added = Product.objects.all().order_by('-created')
-        # last_product = last_product_added[:1]
+        today_orders = Order.objects.count()
+        new_orders = Order.objects.filter(status='1').count()
+        paid_order = Order.objects.filter(status='2').count()
+        in_progress_orders = Order.objects.filter(status='3').count()
+        ready_to_go_orders = Order.objects.filter(status='4').count()
+        sent_orders = Order.objects.filter(status='5').count()
+        small_stock_products = Product.objects.all().order_by('stock')[:3]
         context = {
             'date': today_date,
             'products_quantity': products_quantity,
-            # 'last_product': last_product,
+            'small_stock_products': small_stock_products,
+            'today_orders': today_orders,
+            'new_orders': new_orders,
+            'paid_orders': paid_order,
+            'in_progress_orders': in_progress_orders,
+            'ready_to_go_orders': ready_to_go_orders,
+            'sent_orders': sent_orders,
         }
         return render(request, "dashboard.html", context=context)
 
 
-class AboutView(View):
-    def get(self, request):
-        return render(request, "about.html")
+def about_view(request):
+    return render(request, "about.html")
 
 
-class OfferView(View):
-    def get(self, request):
-        return render(request, "offer.html")
+def offer_view(request):
+    return render(request, "offer.html")
 
 
-class ContactView(View):
-    def get(self, request):
-        return render(request, "contact.html")
+def contact_view(request):
+    return render(request, "contact.html")
 
 
 class ShopView(View):
     def get(self, request, category_slug=None):
         category = None
         categories = Category.objects.all()
-        products = Product.objects.filter(available=True)
+        products = Product.objects.all().filter(available=True)
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
             products = products.filter(category=category)
+
+        products_with_net_price = []
+
+        for product in products:
+            price_net = round(Decimal(str(product.price)) / Decimal(1.23), 2)
+            products_with_net_price.append({'product': product, 'price_net': price_net})
+
         context = {
             'category': category,
             'categories': categories,
+            'products_with_net_prices': products_with_net_price,
             'products': products,
         }
         return render(request, "shop.html", context=context)
@@ -72,107 +94,214 @@ class ProductsListView(View):
     def get(self, request, category_slug=None):
         category = None
         categories = Category.objects.all()
-        products = Product.objects.all()
+        products = Product.objects.all().order_by('created')
+        p = Paginator(products, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
             products = products.filter(category=category)
         context = {
             'category': category,
             'categories': categories,
-            'products': products,
+            'page_obj': page_obj,
         }
         return render(request, "products-list.html", context=context)
 
 
 class ProductAddView(View):
     def get(self, request):
-        return render(request, "product-add.html")
+        form = ProductAddForm()
+        return render(request, "product-add.html", {'form': form})
+
+    def post(self, request):
+        form = ProductAddForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/products/list/')
+        return render(request, "product-add.html", {'form': form})
+
+
+@staff_member_required
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+
+    if request.method == 'POST':
+        form = ProductEditForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('/products/list/')
+    else:
+        form = ProductEditForm(instance=product)
+    return render(request, "product-edit.html", {'form': form,
+                                                 'product': product})
 
 
 class ProductView(View):
     def get(self, request, product_id):
         product = get_object_or_404(Product,
-                                    id=product_id,
-                                    available=True)
+                                    id=product_id)
         context = {'product': product}
         return render(request, "product-details.html", context=context)
 
 
 class OrdersListView(View):
     def get(self, request):
-        return render(request, "orders-list.html")
+        orders = Order.objects.all()
+        p = Paginator(orders, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        context = {'page_obj': page_obj}
+        return render(request, "orders-list.html", context=context)
+
+
+class OrdersListPaidView(View):
+    def get(self, request):
+        orders = Order.objects.filter(status='2').order_by('-created')
+        p = Paginator(orders, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        context = {'page_obj': page_obj}
+        return render(request, "orders-list.html", context=context)
+
+
+class OrdersListPrepareView(View):
+    def get(self, request):
+        orders = Order.objects.filter(status='3').order_by('-created')
+        p = Paginator(orders, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        context = {'page_obj': page_obj}
+        return render(request, "orders-list.html", context=context)
+
+
+class OrdersListReadyView(View):
+    def get(self, request):
+        orders = Order.objects.filter(status='4').order_by('-created')
+        p = Paginator(orders, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        context = {'page_obj': page_obj}
+        return render(request, "orders-list.html", context=context)
+
+
+class OrdersListSentView(View):
+    def get(self, request):
+        orders = Order.objects.filter(status='5').order_by('-created')
+        p = Paginator(orders, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        context = {'page_obj': page_obj}
+        return render(request, "orders-list.html", context=context)
+
+
+class OrdersListNewView(View):
+    def get(self, request):
+        orders = Order.objects.filter(status='1').order_by('-created')
+        p = Paginator(orders, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+
+        context = {'page_obj': page_obj}
+        return render(request, "orders-list.html", context=context)
+
+@staff_member_required
+def edit_order(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+
+    if request.method == 'POST':
+        form = OrderEditForm(request.POST, instance=order)
+        if form.is_valid():
+            form.save()
+            return redirect('/orders/list/')
+    else:
+        form = OrderEditForm(instance=order)
+    return render(request, "order-edit.html", {'form': form, 'order': order})
 
 
 class OrderView(View):
-    def get(self, request):
-        return render(request, "order-details.html")
+    def get(self, request, order_id):
+        order = get_object_or_404(Order, id=order_id)
+        order_items = OrderItem.objects.all().filter(order=order_id)
+        context = {'order': order,
+                   'order_items': order_items}
+        return render(request, "order-details.html", context=context)
 
 
 class ClientsListView(View):
     def get(self, request):
-        return render(request, "clients-list.html")
+        customers = UserBase.objects.all().filter(is_staff=False)
+        p = Paginator(customers, 5)
+        page_number = request.GET.get('page')
+        try:
+            page_obj = p.get_page(page_number)
+        except PageNotAnInteger:
+            page_obj = p.page(1)
+        except EmptyPage:
+            page_obj = p.page(p.num_pages)
+        context = {'page_obj': page_obj}
+        return render(request, "customers-list.html", context=context)
 
 
 class ClientView(View):
-    def get(self, request):
-        return render(request, "client-details.html")
+    def get(self, request, customer_id):
+        customer = get_object_or_404(UserBase, id=customer_id)
+        orders = Order.objects.all().filter(user=customer_id)
+        context = {'customer': customer,
+                   'orders': orders,
+                   }
+        return render(request, "customer-details.html", context=context)
 
+@staff_member_required
+def edit_customer(request, customer_id):
+    customer = get_object_or_404(UserBase, id=customer_id)
 
-def add_to_cart(request, product_id):
-    if request.method == "POST":
-        product = get_object_or_404(Product, pk=product_id)
-        cart = request.session.get('cart', {})
-        cart_item = cart.get(str(product_id), {'quantity': 0})
-        quantity = cart_item['quantity'] + 1
-
-        if quantity <= product.stock:
-            cart_item['quantity'] = quantity
-            cart[str(product_id)] = cart_item
-            request.session['cart'] = cart
-        else:
-            error_message = f" Przekroczono dostępną ilość produktu '{product.name} {product.description}. " \
-                            f"Maksymalna dostępna ilość to {product.stock}"
-            return render(request, 'error_message.html', {'error_message': error_message})
-
-    return redirect('/cart/')
-
-
-def view_cart(request):
-    cart = request.session.get('cart', {})
-    cart_items = []
-    total_price = 0
-    for product_id, item_data in cart.items():
-        product = Product.objects.get(pk=product_id)
-        quantity = item_data['quantity']
-        price = product.price * quantity
-        total_price += price
-        cart_items.append({'product': product, 'quantity': quantity, 'price': price})
-    context = {
-        'cart_items': cart_items,
-        'total_price': total_price,
-    }
-    return render(request, 'cart-details.html', context=context)
-
-
-def remove_cart(request):
     if request.method == 'POST':
-        request.session.pop('cart', None)
-    return redirect('/cart/')
-
-
-def update_cart(request):
-    if request.method == "POST":
-        cart = request.session.get('cart', {})
-        for product_id, quantity in request.POST.items():
-            if product_id.startswith('quantity_'):
-                product_id = product_id.split('_')[1]
-                product = get_object_or_404(Product, pk=product_id)
-                new_quantity = int(quantity)
-
-                if new_quantity > 0 and new_quantity <= product.stock:
-                    cart_item = cart.get(product_id, {'quantity': 0})
-                    cart_item['quantity'] = new_quantity
-                    cart[str(product_id)] = cart_item
-        request.session['cart'] = cart
-    return redirect('/cart/')
-
+        form = CustomerEditForm(request.POST, instance=customer)
+        if form.is_valid():
+            form.save()
+            return redirect('/customers/list/')
+    else:
+        form = CustomerEditForm(instance=customer)
+    return render(request, "order-edit.html", {'form': form,
+                                               'customer': customer})

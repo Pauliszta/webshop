@@ -21,13 +21,12 @@
             <a href="/main/" class="navbar-brand main-logo main-logo-smaller justify-content-left">
                 <img src="/static/images/rolmet-logo.png" alt="logo"></a>
             </a>
-            <div class="d-flex justify-content-center">
-                <h4 class="mr-3">Witaj, Imię</h4>
+            <div class="d-flex justify-content-end">
+                <h4 class="mr-3">Witaj, {{ user.first_name }}</h4>
                 <div class="circle-div text-center"><i class="fas fa-user icon-user"></i></div>
             </div>
         </nav>
     </header>
-
 
     <section class="dashboard-section">
         <table>
@@ -54,7 +53,7 @@
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/clients/list/">
+                            <a class="nav-link" href="/customers/list/">
                                 <span>Klienci</span>
                                 <i class="fas fa-angle-right"></i>
                             </a>

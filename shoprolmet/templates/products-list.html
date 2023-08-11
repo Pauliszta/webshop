@@ -34,7 +34,7 @@
         </thead>
         <tbody class="text-color-lighter">
 
-        {% for product in products %}
+        {% for product in page_obj %}
 
             <tr class="d-flex">
                 <th scope="row" class="col-1">
@@ -68,25 +68,15 @@
         {% endfor %}
         </tbody>
     </table>
-    <div class="pagination">
-        <span class="step-links">
-            {%  if products.paginator.num_pages > 1 %}
-                {% if products.has_previous %}
-                    <a href="?page={{ products.previous_page_number }}"> < poprzednia </a> |
+            <center>
+                {% if page_obj.has_previous %}
+                    <a class="text-color-lighter" href="?page={{page_obj.previous_page_number}}"><</a>
                 {% endif %}
-
-                <span class="current">
-                    {%  for page in products.paginator.page_range %}
-                        <a href="?pages={{ page }}"> {{ page }} </a> |
-                    {% endfor %}
-                </span>
-
-                {% if products.has_next %}
-                    <a href="?page={{ products.next_page_number }}"> następna > </a>
+                    <span>{{page_obj.number}}</span>
+                {% if page_obj.has_next %}
+                    <a class="text-color-lighter" href="?page={{page_obj.next_page_number}}">></a>
                 {% endif %}
-            {%  endif %}
-        </span>
-    </div>
+            </center>
 </div>
     </form>
 {% endblock content %}

@@ -17,15 +17,29 @@
 <body>
     <header class="page-header">
         <nav class="navbar navbar-expand-lg justify-content-around">
-            <a href="index.html" class="navbar-brand main-logo">
+            <a href="/" class="navbar-brand main-logo">
                 <img src="/static/images/rolmet-logo.png" alt="logo">
             </a>
             <ul class="nav no-underline text-uppercase">
                 <li class="nav-item ml-4">
-                    <a class="nav-link color-header" href=/login/"> ikonka użytkownika </a>
+                    {% if user.is_authenticated %}
+                        <li>
+                            <a class="nav-link color-header" href="{% url 'account:dashboard' %}"> Witaj, {{ user.first_name }} !</a>
+                        </li>
+                        <li>
+                            <a class="nav-link color-header" href="{%  url "account:logout" %}"> Wyloguj </a>
+                        </li>
+                    {% else %}
+                        <li>
+                            <a class="nav-link color-header" href="{% url 'account:register' %}"> Nowe konto </a>
+                        </li>
+                        <li>
+                            <a class="nav-link color-header" href="{% url 'account:login' %}"> Zaloguj </a>
+                        </li>
+                    {% endif %}
                 </li>
                 <li class="nav-item ml-4">
-                    <a class="nav-link color-header" href=/cart-details/"> koszyk jest pusty </a>
+                    <a class="nav-link color-header" href="/view/"> koszyk </a>
                 </li>
                 <li class="nav-item ml-4">
                     <a class="nav-link" href="/"> HOME </a>

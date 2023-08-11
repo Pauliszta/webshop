@@ -1,0 +1,29 @@
+{% extends "__base__.html" %}
+{% load static %}
+{% block title %}
+    Zamówienie złożone
+{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="row">
+                    <div class="col-12 col-lg-12 mx-auto">
+                        <div class="p-12">
+                            <h3 class="mb-12">
+                                Zamówienie złożone.
+                            </h3>
+                            <p class=".center">Opłać je. Po wpłacie wyślemy Twoje zamówienie.</p>
+                            <a class=".center" href="{%  url "account:dashboard" %}"> Zobacz zamówienia </a>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

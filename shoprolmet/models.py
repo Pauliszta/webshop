@@ -1,11 +1,11 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.conf import settings
+
+
 # Create your models here.
-
-
 class Category(models.Model):
     name = models.CharField(max_length=200, db_index=True)
-    slug = models.SlugField(max_length=200, db_index=True, unique=True)
+    slug = models.SlugField(db_index=True, unique=True)
 
     class Meta:
         ordering = ('name',)
@@ -17,10 +17,11 @@ class Category(models.Model):
 
 
 class Product(models.Model):
-    category = models.ForeignKey(Category, related_name='products', on_delete=models.CASCADE)
+    category = models.ForeignKey(Category, related_name='product',
+                                 on_delete=models.CASCADE)
     name = models.CharField(max_length=200, db_index=True)
-    slug = models.SlugField(max_length=200, db_index=True)
-    image = models.ImageField(upload_to='products/%Y/%m/%d', blank=True)
+    slug = models.SlugField(db_index=True)
+    image = models.ImageField(default='images/lozysko-mgk.jpg', upload_to='images/')
     description = models.CharField(max_length=200)
     width = models.PositiveIntegerField()
     producent = models.CharField(max_length=200, db_index=True)
@@ -29,23 +30,14 @@ class Product(models.Model):
     available = models.BooleanField(default=True)
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL,
+                                   on_delete=models.CASCADE,
+                                   related_name='employee')
 
     class Meta:
-        ordering = ('name',)
-        index_together = (('id', 'slug'),)
+        ordering = ('-created',)
+        verbose_name_plural = 'Products'
 
     def __str__(self):
         return self.name
-
-
-class Cart(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    products = models.ManyToManyField(Product, through='CartItem')
-
-
-class CartItem(models.Model):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=1)
-
 

@@ -1,0 +1,58 @@
+{% extends "__base__.html" %}
+{%  block title %}
+    Logowanie
+{%  endblock %}
+{% block content %}
+
+<div class="container-fluid">
+    <div class="row no-gutter">
+        <div class="col-md-12">
+            <div class="login d-flex align-items-center py-5">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-12 col-lg-7 mx-auto">
+                            <form class="account-form p-4 rounded col-lg-10 mx-auto" method="post" action="{% url 'account:register' %}">
+                                {% csrf_token %}
+                                <h3> Stwórz nowe konto</h3>
+                                <p class="mb-12"> To jest darmowe i zajmie tylko minutę ;)</p>
+                                    {%  if form.errors %}
+                                        <p> Popraw poniższe błędy</p>
+                                        {%  for field in form %}
+                                            {%  if field.errors %}
+                                            <div class="alert alert-primary" role="alert">
+                                                {{ field.label }} : {{ field.errors|striptags }}
+                                            </div>
+                                            {%  endif %}
+                                        {%  endfor %}
+                                    {%  endif %}
+                                <label> {{  form.user_name.label }}<span class="text-muted small"> (Wymagane)</span></label>
+                            {{  form.user_name }}
+                                <label> {{ form.email.label }}<span class="text-muted small"> (Wymagane)</span></label>
+                            {{ form.email }}
+                                <label> {{ form.password.label }}<span class="text-muted small"> Minimum 8 znaków i jeden znak specjalny</span></label>
+                            {{ form.password }}
+                                <label> {{ form.password2.label }}<span class="text-muted small">(Wymagane)</span></label>
+                            {{ form.password2 }}
+                                <label> {{ form.first_name.label }}<span class="text-muted small">(Wymagane)</span></label>
+                            {{ form.first_name }}
+                                <label> {{ form.last_name.label }}<span class="text-muted small">(Wymagane)</span></label>
+                            {{ form.last_name }}
+                            <button class="btn btn-primary btn-block py-2 mb-4 mt-5 fw500 w-100" type="submit">
+                                {%  csrf_token %}
+                                Zarejestruj się
+                            </button>
+                            <p class="text-center">
+                                <a href="{%  url 'account:login' %}"> Masz już konto?</a>
+                            </p>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
