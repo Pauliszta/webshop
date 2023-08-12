@@ -6,21 +6,29 @@ from django.contrib.admin.views.decorators import staff_member_required
 from account.models import UserBase
 from orders.models import Order, OrderItem
 
-from .forms import ProductAddForm, ProductEditForm, \
-    OrderEditForm, CustomerEditForm
+from .forms import ProductAddForm, ProductEditForm, OrderEditForm, CustomerEditForm
 from .models import Category, Product
 import datetime
 from decimal import Decimal
+from cart.forms import CartAddProductForm
 
 # Create your views here.
 
 
 class IndexView(View):
+    """
+    Displays the homepage of company's webiste
+    """
     def get(self, request):
         return render(request, "index.html")
 
 
 class DashboardView(View):
+    """
+    Displays homepage for company's employees.
+
+    Returns divided by status quantities of orders and shows products with the smallest quantity on webshop
+    """
     def get(self, request):
         today_date = datetime.datetime.now()
         products_quantity = Product.objects.count()
@@ -46,22 +54,35 @@ class DashboardView(View):
 
 
 def about_view(request):
+    """
+    Returns the side with information about company
+    """
     return render(request, "about.html")
 
 
 def offer_view(request):
+    """
+    Returns the side with company's offers
+    """
     return render(request, "offer.html")
 
 
 def contact_view(request):
+    """
+    Returns the side with contact
+    """
     return render(request, "contact.html")
 
 
 class ShopView(View):
+    """
+    Displays the products on webshop
+    """
     def get(self, request, category_slug=None):
         category = None
         categories = Category.objects.all()
         products = Product.objects.all().filter(available=True)
+
         if category_slug:
             category = get_object_or_404(Category, slug=category_slug)
             products = products.filter(category=category)
@@ -81,16 +102,24 @@ class ShopView(View):
         return render(request, "shop.html", context=context)
 
 
-class ShopProductView(View):
-    def get(self, request, product_id):
-        product = get_object_or_404(Product,
-                                    id=product_id,
-                                    available=True)
-        context = {'product': product}
-        return render(request, "shop-product-details.html", context=context)
+def product_detail(request, product_id):
+    """
+    Displays the details about product.
+    """
+    product = get_object_or_404(Product, id=product_id,
+                                available=True)
+    cart_product_form = CartAddProductForm()
+    return render(request,
+                  'shop-product-details.html',
+                  {'product': product,
+                   'cart_product_form': cart_product_form})
 
 
 class ProductsListView(View):
+    """
+    Returns list of all products for employees.
+    Shows also non-available products.
+    """
     def get(self, request, category_slug=None):
         category = None
         categories = Category.objects.all()
@@ -115,6 +144,9 @@ class ProductsListView(View):
 
 
 class ProductAddView(View):
+    """
+    Allows to add new product by employee
+    """
     def get(self, request):
         form = ProductAddForm()
         return render(request, "product-add.html", {'form': form})
@@ -129,6 +161,9 @@ class ProductAddView(View):
 
 @staff_member_required
 def edit_product(request, product_id):
+    """
+    Allows edit product by employee
+    """
     product = get_object_or_404(Product, id=product_id)
 
     if request.method == 'POST':
@@ -143,6 +178,9 @@ def edit_product(request, product_id):
 
 
 class ProductView(View):
+    """
+    Returns details of product for employee's view
+    """
     def get(self, request, product_id):
         product = get_object_or_404(Product,
                                     id=product_id)
@@ -151,6 +189,9 @@ class ProductView(View):
 
 
 class OrdersListView(View):
+    """
+    Returns list of all orders for employees.
+    """
     def get(self, request):
         orders = Order.objects.all()
         p = Paginator(orders, 5)
@@ -167,6 +208,9 @@ class OrdersListView(View):
 
 
 class OrdersListPaidView(View):
+    """
+    Shows all paid orders.
+    """
     def get(self, request):
         orders = Order.objects.filter(status='2').order_by('-created')
         p = Paginator(orders, 5)
@@ -183,6 +227,9 @@ class OrdersListPaidView(View):
 
 
 class OrdersListPrepareView(View):
+    """
+    Shows all orders in preparing.
+    """
     def get(self, request):
         orders = Order.objects.filter(status='3').order_by('-created')
         p = Paginator(orders, 5)
@@ -199,6 +246,9 @@ class OrdersListPrepareView(View):
 
 
 class OrdersListReadyView(View):
+    """
+    Shows all orders ready to go.
+    """
     def get(self, request):
         orders = Order.objects.filter(status='4').order_by('-created')
         p = Paginator(orders, 5)
@@ -215,6 +265,9 @@ class OrdersListReadyView(View):
 
 
 class OrdersListSentView(View):
+    """
+    Shows all order which are sent.
+    """
     def get(self, request):
         orders = Order.objects.filter(status='5').order_by('-created')
         p = Paginator(orders, 5)
@@ -245,8 +298,12 @@ class OrdersListNewView(View):
         context = {'page_obj': page_obj}
         return render(request, "orders-list.html", context=context)
 
+
 @staff_member_required
 def edit_order(request, order_id):
+    """
+    Allows to edit the order and changes the status, when the order is in next step
+    """
     order = get_object_or_404(Order, id=order_id)
 
     if request.method == 'POST':
@@ -260,6 +317,9 @@ def edit_order(request, order_id):
 
 
 class OrderView(View):
+    """
+    Shows order's details
+    """
     def get(self, request, order_id):
         order = get_object_or_404(Order, id=order_id)
         order_items = OrderItem.objects.all().filter(order=order_id)
@@ -269,6 +329,10 @@ class OrderView(View):
 
 
 class ClientsListView(View):
+    """
+    Returns list of all clients for employees.
+    Shows also non-active clients.
+    """
     def get(self, request):
         customers = UserBase.objects.all().filter(is_staff=False)
         p = Paginator(customers, 5)
@@ -284,6 +348,9 @@ class ClientsListView(View):
 
 
 class ClientView(View):
+    """
+    Shows client's details
+    """
     def get(self, request, customer_id):
         customer = get_object_or_404(UserBase, id=customer_id)
         orders = Order.objects.all().filter(user=customer_id)
@@ -292,8 +359,12 @@ class ClientView(View):
                    }
         return render(request, "customer-details.html", context=context)
 
+
 @staff_member_required
 def edit_customer(request, customer_id):
+    """
+    Allows to edit the clients and can to reactive account for deleted client
+    """
     customer = get_object_or_404(UserBase, id=customer_id)
 
     if request.method == 'POST':

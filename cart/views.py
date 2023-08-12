@@ -1,92 +1,78 @@
-from django.shortcuts import get_object_or_404, render, redirect
-
-from cart.models import CartItem, Cart
-from orders.models import Order, OrderItem
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views.decorators.http import require_POST
 from shoprolmet.models import Product
-# from .cart import Cart
+from .cart import Cart
 
-# Create your views here.
+from .forms import CartAddProductForm
 
 
-def cart_view(request):
+def cart_detail(request):
+    """
+    Displays the shopping cart's view and adding the shipping cost to the order.
+    """
     cart = request.session.get('cart', {})
     cart_items = []
     total_price = 0
     shipping_cost = int(20)
+    is_cart_empty = not cart
 
-    for product_id, item_data in cart.items():
-        product = Product.objects.get(pk=product_id)
-        quantity = item_data['quantity']
-        price = product.price * quantity
-        total_price += price
-        cart_items.append({'product': product, 'quantity': quantity, 'price': price})
+    product_ids = cart.keys()
+    products = Product.objects.filter(id__in=product_ids)
 
     if request.method == 'POST':
-        cart = request.session.get('cart', {})
-        updated_cart = {}
         for product_id, item_data in cart.items():
-            new_quantity = int(request.POST.get(f'quantity_{product_id}', item_data['quantity']))
-            if 0 < new_quantity <= product.stock:
-                item_data['quantity'] = new_quantity
-            updated_cart[product_id] = item_data
-        request.session['cart'] = updated_cart
-        return redirect('/view/')
+            updated_quantity = int(request.POST.get(f'quantity_{product_id}', item_data['quantity']))
+            if 0 < updated_quantity <= products.get(id=product_id).stock:
+                cart_item = cart.get(product_id)
+                cart_item['quantity'] = updated_quantity
+                request.session.modified = True
+
+    for product_id, item_data in cart.items():
+        product = None
+        quantity = item_data['quantity']
+        price = 0
+        total = 0
+
+        for p in products:
+            if str(p.id) == product_id:
+                product = p
+                price = product.price
+                total = price * quantity
+
+        if product:
+            price = product.price
+            total_price += price * quantity
+            cart_items.append({'product': product, 'quantity': quantity, 'price': price, 'total': total})
 
     context = {
         'cart_items': cart_items,
         'total_price': total_price + shipping_cost,
         'shipping_cost': shipping_cost,
+        'is_cart_empty': is_cart_empty,
     }
     return render(request, 'cart-details.html', context=context)
 
-
+@require_POST
 def cart_add(request, product_id):
-    if request.method == "POST":
-        product = get_object_or_404(Product, pk=product_id)
-        cart = request.session.get('cart', {})
-        user = request.user
-        cart_item = cart.get(str(product_id), {'quantity': 0})
-        quantity = cart_item['quantity'] + 1
+    """
+    Adds product to the shopping cart.
 
-        if quantity <= product.stock:
-            cart_item['quantity'] = quantity
-            cart[str(product_id)] = cart_item
-            request.session['cart'] = cart
-        else:
-            error_message = f" Przekroczono dostępną ilość produktu '{product.name} {product.description}. " \
-                                    f"Maksymalna dostępna ilość to {product.stock}"
-            return render(request, 'error_message.html', {'error_message': error_message})
-
-        return redirect('/view/')
-
-
-def cart_delete(request):
-    if request.method == 'POST':
-        request.session.pop('cart', None)
+    """
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    form = CartAddProductForm(request.POST)
+    if form.is_valid():
+        cd = form.cleaned_data
+        cart.add(product=product, quantity=cd['quantity'], update_quantity=cd['update'])
     return redirect('/view/')
 
 
-# def cart_update(request):
-#     if request.method == "POST":
-#         cart = request.session.get('cart', {})
-#         new_quantity = 0
-#         for product_id, item_data in cart.items():
-#             if 0 < new_quantity <= product.stock:
-#                 cart_item = cart.get(product_id, {'quantity': 0})
-#                 cart_item['quantity'] = new_quantity
-#                 cart[str(product_id)] = cart_item
-#                 request.session['cart'] = cart
-#             return redirect('/view/')
-
-#     if request.method == 'POST':
-#         cart = request.session.get('cart', {})
-#         updated_cart = {}
-#         for product_id, item_data in cart.items():
-#             new_quantity = int(request.POST.get(f'quantity_{product_id}', item_data['quantity']))
-#             if 0 < new_quantity <= product.stock:
-#                 item_data['quantity'] = new_quantity
-#             updated_cart[product_id] = item_data
-#         request.session['cart'] = updated_cart
-#         return redirect('/view/')
-
+def cart_remove(request, product_id):
+    """
+    Deletes the shopping cart.
+    """
+    cart = Cart(request)
+    product = get_object_or_404(Product, id=product_id)
+    cart.remove(product)
+    return redirect('/view/')
 

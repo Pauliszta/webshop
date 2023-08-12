@@ -2,11 +2,7 @@ from django.test import TestCase
 from account.models import UserBase
 from shoprolmet.models import Category, Product
 from django.test import Client
-from django.urls import reverse
 from orders.models import Order
-import datetime
-from .forms import ProductAddForm, ProductEditForm
-
 
 # Create your tests here.
 
@@ -83,20 +79,8 @@ class DashboardViewTest(TestCase):
                              full_name='full_name', city='city', payment_method='payment_method',
                              delivery_method='delivery_method', total_paid=10, status='5')
 
-
         response = self.client.get('/main/')
         self.assertEqual(response.status_code, 302)
-        # self.assertTemplateUsed(response, 'dashboard.html')
-
-        # self.assertIn('date', response.context)
-        # self.assertIn('products_quantity', response.context)
-        # self.assertIn('small_stock_products', response.context)
-        # self.assertIn('today_orders', response.context)
-        # self.assertIn('new_orders', response.context)
-        # self.assertIn('paid_orders', response.context)
-        # self.assertIn('in_progress_orders', response.context)
-        # self.assertIn('ready_to_go_orders', response.context)
-        # self.assertIn('sent_orders', response.context)
 
 
 class AddProductViewTest(TestCase):
@@ -107,7 +91,6 @@ class AddProductViewTest(TestCase):
     def test_add_product_view_GET(self):
         response = self.client.get(self.add_product_url)
         self.assertEqual(response.status_code, 302)
-
 
     def test_add_product_view_POST_valid_form(self):
         category = Category.objects.create(name='category1', slug='category1')

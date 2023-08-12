@@ -6,9 +6,11 @@ from django.contrib.admin.views.decorators import staff_member_required
 
 from shoprolmet import views
 from shoprolmet.views import IndexView, DashboardView, \
-    ShopView, ProductView, ProductsListView, OrdersListView, ClientsListView, ClientView, ShopProductView, \
+    ShopView, ProductView, ProductsListView, OrdersListView, ClientsListView, ClientView, \
     OrdersListNewView, OrdersListPaidView, \
     OrdersListPrepareView, OrdersListReadyView, OrdersListSentView, OrderView, ProductAddView
+# ShopProductView,
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,7 +20,8 @@ urlpatterns = [
     path('offer/', views.offer_view, name='offer'),
     path('contact/', views.contact_view, name='contact'),
     path('shop/', ShopView.as_view()),
-    path('shop/product/<int:product_id>/', ShopProductView.as_view()),
+    # path('shop/product/<int:product_id>/', ShopProductView.as_view()),
+    path('shop/product/<int:product_id>/', views.product_detail),
 
     path('product/<int:product_id>/', staff_member_required(ProductView.as_view())),
     path('products/list/', staff_member_required(ProductsListView.as_view())),

@@ -1,69 +1,85 @@
 {% extends "__base__.html" %}
 {% load static %}
 {% block title %}
-    Koszyk na zakupy
+         Koszyk na zakupy
 {% endblock %}
 {% block content %}
     <section class="padding-medium story">
         <div class="container">
-            <form action="/update/" method="post">
-            {% csrf_token %}
-                <h2 class=" color-header text-uppercase">Twój koszyk</h2>
+            <h2 class=" color-header text-uppercase">Koszyk na zakupy</h2>
+            <table class="table borderless">
+                <thead>
+                     <tr class="d-flex">
+                         <th scope="row" class="col-4">Produkt</th>
+                         <th class="col-3">Ilość</th>
+                         <th class="col-2">Usuń</th>
+                         <th class="col-2">Cena jednostkowa</th>
+                         <th class="col-2">Kwota</th>
+                     </tr>
+                </thead>
+                <tbody>
                     {% for item in cart_items %}
-                    <table class="table borderless">
-
-                        <tbody>
-                        <tr class="d-flex">
-                            <th scope="row" class="col-7">
-                                {{ forloop.counter }}. {{ item.product.name  }} {{ item.product.category }} - {{ item.product.description }}</th>
-                            <td class="col-2">
-                                {{ item.product.price }} zł
-                            </td>
-                            <td class="col-2">
-                                <input type="number" id="quantity_{{ item.product.id }}" name="quantity_{{ item.product.id }}"
-                                       value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}"> szt.
-                            </td>
-                            <td class="col-2">
-                                {{ item.price }} zł
-                            </td>
-                        </tr>
-
-                        </tbody>
-                    </table>
+                        {% with product=item.product %}
+                            <tr class="d-flex">
+                                <td class="col-4">{{ product.name }} {{ product.description }}</td>
+                                <td class="col-3">
+                                     <form action="{% url "cart:cart_add" product.id %}" method="post">
+                                      <input type="number" id="quantity_{{ item.product.id }}" name="quantity_{{ item.product.id }}"
+                                             value="{{ item.quantity }}" min="1" max="{{ item.product.stock }}">
+                                       {{ item.update_quantity_form.quantity }}
+                                       {{ item.update_quantity_form.update }}
+                                         <button class="btn btn-warning rounded-0 text-light m-1 update-cart"
+                                         type="submit" value="update">Aktualizuj</button>
+                                       {% csrf_token %}
+                                     </form>
+                               </td>
+                                <td class="col-2"><a class="btn btn-danger rounded-0 text-light m-1"
+                                    href="{% url "cart:cart_remove" product.id %}">Usuń</a></td>
+                                <td class="col-2 num">{{ item.price }} zł</td>
+                                <td class="col-2 num">{{ item.total }} zł</td>
+                            </tr>
+                       {% endwith %}
                     {% endfor %}
-            </form>
+                </tbody>
+            </table>
+            <div>
+                <h3> {{ error_message }}</h3>
+            </div>
+            <div class="col d-flex justify-content-end mb-1">
+                <h6> Koszt przesyłki: {{ shipping_cost }} zł</h6>
+            </div>
+            <div class="col d-flex justify-content-end mb-1">
+                <h4 class="text-uppercase"> Suma: {{ total_price }} zł</h4>
+            </div>
+            <div class="col d-flex justify-content-end mb-1">
+                <p class="text-right">
+                    {%  if user.is_authenticated %}
+                        {%  if is_cart_empty %}
+                            <div class="col d-flex justify-content-end">
+                                <p> Twój koszyk jest pusty. </p>
+                            </div>
+                            <div class="col d-flex justify-content-end">
+                                <a class="btn btn-color" href="/shop/"> Do sklepu</a>
+                            </div>
+                        {%  else %}
+                            <div class="col d-flex justify-content-end">
+                                <a class="btn btn-color" href="/shop/"> Kontynuuj zakupy</a>
+                            </div>
+                            <div class="col d-flex justify-content-end">
+                                <form action="/orders/order-more-info/" method="post">
+                                    {%  csrf_token %}
+                                    <button class ="btn btn-color" type="submit">Dalej</button>
+                                </form>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <form action="/account/login/" method="post">
+                            {%  csrf_token %}
+                            <button class ="btn btn-color" type="submit">Dalej</button>
+                        </form>
+                    {%  endif %}
+                </p>
+            </div>
         </div>
-        <div class="col d-flex justify-content-end mb-1">
-            <h6> Koszt przesyłki: {{ shipping_cost }} zł</h6>
-        </div>
-        <div class="col d-flex justify-content-end mb-1">
-            <h4 class="text-uppercase"> Suma: {{ total_price }} zł</h4>
-        </div>
-        <div>
-            <h3> {{ error_message }}</h3>
-        </div>
-        <div class="col d-flex justify-content-end mb-1 padding-small">
-            <form action="/view/" method="post">
-                {% csrf_token %}
-                <button class ="btn btn-warning rounded-0 text-light m-1" type="submit">Aktualizuj koszyk</button>
-            </form>
-             <form action="/delete/" method="post">
-                {% csrf_token %}
-                <button class ="btn btn-danger rounded-0 text-light m-1" type="submit">Usuń koszyk</button>
-            </form>
-            {%  if user.is_authenticated %}
-                <form action="/orders/order-more-info/" method="post">
-                    {%  csrf_token %}
-                    <button class ="btn btn-color rounded-0 text-light m-1" type="submit">Dalej</button>
-                </form>
-            {% else %}
-                <form action="/account/login/" method="post">
-                    {%  csrf_token %}
-                    <button class ="btn btn-color rounded-0 text-light m-1" type="submit">Dalej</button>
-                </form>
-            {%  endif %}
-        </div>
-
-
     </section>
 {% endblock %}

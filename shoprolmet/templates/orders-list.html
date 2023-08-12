@@ -18,10 +18,10 @@
             <table class="table border-bottom schedules-content">
                 <thead>
                 <tr class="d-flex text-color-darker">
-                    <th scope="col" class="col-2">NR ZAMÓWIENIA</th>
-                    <th scope="col" class="col-3">WARTOŚĆ</th>
-                    <th scope="col" class="col-3">STAN</th>
-                    <th scope="col" class="col-2">DATA ZŁOŻENIA</th>
+                    <th scope="col" class="col-3">NR ZAMÓWIENIA</th>
+                    <th scope="col" class="col-2">WARTOŚĆ</th>
+                    <th scope="col" class="col-2">STAN</th>
+                    <th scope="col" class="col-3">DATA ZŁOŻENIA</th>
                     <th scope="col" class="col-2 center">AKCJE</th>
                 </tr>
                 </thead>
@@ -30,16 +30,16 @@
 
                     <tr class="d-flex">
                         <th scope="row" class="col-1">{{ forloop.counter }}</th>
-                        <td class="col-1">
-                            : {{ order.id }} </br>
-                        </td>
-                        <td class="col-3">
-                            {{ order.total_paid }} zł
-                        </td>
-                        <td class="col-3">
-                            {{ order.get_status_display }}
+                        <td class="col-2">
+                            0000{{ order.id }} </br>
                         </td>
                         <td class="col-2">
+                            {{ order.total_paid }} zł
+                        </td>
+                        <td class="col-2">
+                            {{ order.get_status_display }}
+                        </td>
+                        <td class="col-3">
                             {{ order.created }}
                         </td>
                         <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">

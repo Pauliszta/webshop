@@ -11,6 +11,9 @@ from .models import UserBase
 
 @login_required
 def dashboard(request):
+    """
+    Shows the dashboard for logged users.
+    """
     orders = Order.objects.all().filter(user=request.user)
     context = {
         'orders': orders,
@@ -20,6 +23,9 @@ def dashboard(request):
 
 
 def account_register(request):
+    """
+    Allows to create new users.
+    """
     if request.user.is_authenticated:
         return redirect('/shop/')
 
@@ -49,6 +55,9 @@ def account_register(request):
 
 @login_required
 def edit_details(request):
+    """
+    Allows edit the contact's details.
+    """
     if request.method == 'POST':
         form = UserEditForm(instance=request.user, data=request.POST)
         if form.is_valid():
@@ -60,6 +69,9 @@ def edit_details(request):
     return render(request, 'account/user/edit_details.html', {'form': form})
 @login_required
 def delete_user(request):
+    """
+    Allows to deactivate account.
+    """
     user = UserBase.objects.get(user_name=request.user)
     user.is_active = False
     user.save()
