@@ -122,8 +122,9 @@ class CustomerEditForm(forms.ModelForm):
                                attrs={'class': 'form-control mb-3',
                                       'placeholder': 'Miasto',
                                       'id': 'form-city'}))
+    is_active = forms.BooleanField(label="Aktywny:")
 
     class Meta:
         model = UserBase
         fields = ('email', 'user_name', 'first_name', 'last_name', 'address',
-                  'postal_code', 'city')
+                  'postal_code', 'city', 'is_active')

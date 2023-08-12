@@ -298,6 +298,7 @@ class OrdersListNewView(View):
         context = {'page_obj': page_obj}
         return render(request, "orders-list.html", context=context)
 
+
 @staff_member_required
 def edit_order(request, order_id):
     """
@@ -357,6 +358,7 @@ class ClientView(View):
                    'orders': orders,
                    }
         return render(request, "customer-details.html", context=context)
+
 
 @staff_member_required
 def edit_customer(request, customer_id):
